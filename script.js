@@ -19,26 +19,38 @@ const hex_to_dec = {
 
 let c = document.getElementById("gradient-surface");
 let ctx = c.getContext("2d");
-
 const color_picker = document.getElementById("color-picker");
+const set_button = document.getElementById("set-gradient");
 
-color_picker.addEventListener('change', (event) => {
-    for (let x = 0; x < 300; x++){
-        for (let y = 0; y < 300; y++){
-            setPixel(x, y, getRGB());
-        }
+var top_left;
+var bottom_right;
+
+// color_picker.addEventListener('change', (event) => {
+//     for (let x = 0; x < c.height; x++){
+//         for (let y = 0; y < c.width; y++){
+//             setPixel(x, y, getRGB());
+//         }
+//     }
+// });
+
+set_button.addEventListener('click', (event) => {
+    console.log(getRGB())
+    if (!top_left){
+        top_left = getRGB();
+    }else if (!bottom_right){
+        bottom_right = getRGB();
+        gradient(
+            top_left, 
+            bottom_right
+        );
     }
-})
+});
 
-gradient(
-    [0, 0, 0], 
-    [255, 255, 255]
-);
 
 function gradient(top_left, bottom_right) {
     let total_diagonals = c.width+c.height-1
-    for (let x = 0; x < 300; x++){
-        for (let y = 0; y < 300; y++){
+    for (let x = 0; x < c.height; x++){
+        for (let y = 0; y < c.width ; y++){
             var diagonal = x + y;
             var pixel_color = [0, 0, 0];
             for (let idx = 0; idx < 3; idx++){
