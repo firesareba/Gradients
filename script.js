@@ -17,18 +17,27 @@ const hex_to_dec = {
     'f':15,
 };
 
-let c = document.getElementById("gradient-surface");
-let ctx = c.getContext("2d");
+const m_c = document.getElementById("manhattan-gradient-surface");
+const e_c = document.getElementById("euclidean-gradient-surface");
+let m_ctx = m_c.getContext("2d");
+let e_ctx = e_c.getContext("2d");
 const color_picker = document.getElementById("color-picker");
-const set_button = document.getElementById("set-gradient");
+const set_button = document.getElementById("set-color");
+const gradient_button = document.getElementById("set-gradient");
 
 var top_left;
 var bottom_right;
 
 //make white
-for (let x = 0; x < c.height; x++){
-    for (let y = 0; y < c.width; y++){
-        setPixel(x, y, [255, 255, 255]);
+for (let x = 0; x < m_c.height; x++){
+    for (let y = 0; y < m_c.width; y++){
+        m_setPixel(x, y, [255, 255, 255]);
+    }
+}
+
+for (let x = 0; x < e_c.height; x++){
+    for (let y = 0; y < e_c.width; y++){
+        e_setPixel(x, y, [255, 255, 255]);
     }
 }
 
@@ -47,25 +56,42 @@ set_button.addEventListener('click', (event) => {
         top_left = getRGB();
     }else if (!bottom_right){
         bottom_right = getRGB();
-        gradient(
-            top_left, 
-            bottom_right
-        );
     }
 });
 
+gradient_button.addEventListener('click', (event) => {
+    manhattan_gradient(top_left, bottom_right);
+    euclidean_gradient(top_left, bottom_right);
+});
 
-function gradient(top_left, bottom_right) {
-    let diagonal_manhattan_dist = c.width+c.height
-    for (let x = 0; x < c.height; x++){
-        for (let y = 0; y < c.width ; y++){
+
+
+function manhattan_gradient(top_left, bottom_right) {
+    let diagonal_manhattan_dist = m_c.width+m_c.height;
+    for (let x = 0; x < m_c.height; x++){
+        for (let y = 0; y < m_c.width ; y++){
             var manhattan_dist = x + y;
             var pixel_color = [0, 0, 0];
             for (let idx = 0; idx < 3; idx++){
                 var color = (top_left[idx] * (diagonal_manhattan_dist - manhattan_dist)/diagonal_manhattan_dist) + (bottom_right[idx] * manhattan_dist/diagonal_manhattan_dist);
                 pixel_color[idx] = color;
             }
-            setPixel(x, y, pixel_color)
+            m_setPixel(x, y, pixel_color)
+        }
+    }
+}
+
+function euclidean_gradient(top_left, bottom_right) {
+    let diagonal_euclidean_dist = e_c.width**2+e_c.height**2;
+    for (let x = 0; x < e_c.height; x++){
+        for (let y = 0; y < e_c.width ; y++){
+            var euclidean_dist = x**2 + y**2;
+            var pixel_color = [0, 0, 0];
+            for (let idx = 0; idx < 3; idx++){
+                var color = (top_left[idx] * (diagonal_euclidean_dist - euclidean_dist)/diagonal_euclidean_dist) + (bottom_right[idx] * euclidean_dist/diagonal_euclidean_dist);
+                pixel_color[idx] = color;
+            }
+            e_setPixel(x, y, pixel_color)
         }
     }
 }
@@ -80,8 +106,13 @@ function getRGB() {
     return rgb;
 }
 
-function setPixel(x, y, rgb) {
-    ctx.fillStyle = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
-    ctx.fillRect(x, y, 1, 1)
+function m_setPixel(x, y, rgb) {
+    m_ctx.fillStyle = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
+    m_ctx.fillRect(x, y, 1, 1)
+}
+
+function e_setPixel(x, y, rgb) {
+    e_ctx.fillStyle = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
+    e_ctx.fillRect(x, y, 1, 1)
 }
 
