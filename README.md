@@ -6,11 +6,8 @@ Notes:
     Since right now i am focusing on 2 color. gradients, we can place them in the top left and bottom right corners
     top left is (0, 0)
     bottom right is (300, 300)
-    To make it actually weighted, we can look at diagonals? maybe?
-    So the 0th diagonal only contains the top left origin pixel
-    Then the first diagonal contains (0, 1) and (1, 0)
-    So the diagonal # is x+y for each pixel
-    To add weightage, we have to somehow make a greater diagonal be less of the top and more of the bottom origin
+    To make it actually weighted, we can look at diagonals? maybe? BRAINFART: diagonals = x+y = mahattan_distance!
+    Add weightage based on the manhattan_distance
     KEY OBSERVATION: this will be in the format something_about_top-diagonal and something_about_bottom+diagonal
     Basically the greater the diagonal, the more of the bottom and less of the top we want
     top * (1-diagonal) + bottom * (0+diagonal)

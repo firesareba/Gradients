@@ -25,13 +25,20 @@ const set_button = document.getElementById("set-gradient");
 var top_left;
 var bottom_right;
 
+for (let x = 0; x < c.height; x++){
+    for (let y = 0; y < c.width; y++){
+        setPixel(x, y, [255, 255, 255]);
+    }
+}
+
 // color_picker.addEventListener('change', (event) => {
 //     for (let x = 0; x < c.height; x++){
 //         for (let y = 0; y < c.width; y++){
 //             setPixel(x, y, getRGB());
 //         }
 //     }
-// });
+// }
+//);
 
 set_button.addEventListener('click', (event) => {
     console.log(getRGB())
