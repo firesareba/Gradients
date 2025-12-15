@@ -84,9 +84,11 @@ function manhattan_gradient(top_left, bottom_right) {
 function euclidean_gradient(top_left, bottom_right) {
     for (let x = 0; x < e_c.height; x++){
         for (let y = 0; y < e_c.width ; y++){
+            var distance_to_top = (x-0)**2+(y-0)**2
+            var distance_to_bottom = (x-300)**2+(y-300)**2
             var pixel_color = [0, 0, 0];
             for (let idx = 0; idx < 3; idx++){
-                var color = (top_left[idx] * ((x-0)**2+(y-0)**2) + (bottom_right[idx] * ((x-300)**2+(y-300)**2)));
+                var color = (top_left[idx] * (distance_to_top/(distance_to_top+distance_to_bottom)) + (bottom_right[idx] * (distance_to_bottom/(distance_to_top+distance_to_bottom))));
                 pixel_color[idx] = color;
             }
             e_setPixel(x, y, pixel_color)
