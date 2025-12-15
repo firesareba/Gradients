@@ -88,7 +88,7 @@ function euclidean_gradient(top_left, bottom_right) {
             var distance_to_bottom = (x-300)**2+(y-300)**2
             var pixel_color = [0, 0, 0];
             for (let idx = 0; idx < 3; idx++){
-                var color = (top_left[idx] * (distance_to_top/(distance_to_top+distance_to_bottom)) + (bottom_right[idx] * (distance_to_bottom/(distance_to_top+distance_to_bottom))));
+                var color = (top_left[idx] * (1-(distance_to_top/(distance_to_top+distance_to_bottom))) + (bottom_right[idx] * (1-(distance_to_bottom/(distance_to_top+distance_to_bottom)))));
                 pixel_color[idx] = color;
             }
             e_setPixel(x, y, pixel_color)
