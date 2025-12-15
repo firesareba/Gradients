@@ -25,6 +25,7 @@ const set_button = document.getElementById("set-gradient");
 var top_left;
 var bottom_right;
 
+//make white
 for (let x = 0; x < c.height; x++){
     for (let y = 0; y < c.width; y++){
         setPixel(x, y, [255, 255, 255]);
@@ -55,13 +56,13 @@ set_button.addEventListener('click', (event) => {
 
 
 function gradient(top_left, bottom_right) {
-    let total_diagonals = c.width+c.height-1
+    let diagonal_manhattan_dist = c.width+c.height
     for (let x = 0; x < c.height; x++){
         for (let y = 0; y < c.width ; y++){
-            var diagonal = x + y;
+            var manhattan_dist = x + y;
             var pixel_color = [0, 0, 0];
             for (let idx = 0; idx < 3; idx++){
-                var color = (top_left[idx] * (total_diagonals-diagonal)/total_diagonals) + (bottom_right[idx] * diagonal/total_diagonals);
+                var color = (top_left[idx] * (diagonal_manhattan_dist - manhattan_dist)/diagonal_manhattan_dist) + (bottom_right[idx] * manhattan_dist/diagonal_manhattan_dist);
                 pixel_color[idx] = color;
             }
             setPixel(x, y, pixel_color)
