@@ -23,12 +23,27 @@ let ctx = c.getContext("2d");
 const color_picker = document.getElementById("color-picker");
 
 color_picker.addEventListener('change', (event) => {
-    for (let i = 0; i < 300; i++){
-        for (let j = 0; j < 300; j++){
-            setPixel(i, j, getRGB())
+    for (let x = 0; x < 300; x++){
+        for (let y = 0; y < 300; y++){
+            setPixel(x, y, getRGB());
         }
     }
 })
+
+gradient([0, 0, 0], [255, 255, 255])
+
+function gradient(top_left, bottom_right) {
+    for (let x = 0; x < 300; x++){
+        for (let y = 0; y < 300; y++){
+            var diagonal = x + y;
+            var pixel_color = [0, 0, 0];
+            for (let idx = 0; idx < 3; idx++){
+                var color = (top_left[idx] * (1-diagonal)) + (bottom_right[idx] * (0+diagonal));
+                pixel_color[idx] = color;
+            }
+        }
+    }
+}
 
 function getRGB() {
     let hex = color_picker.value;
