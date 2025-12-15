@@ -30,15 +30,19 @@ color_picker.addEventListener('change', (event) => {
     }
 })
 
-gradient([0, 0, 0], [255, 255, 255])
+gradient(
+    [0, 0, 0], 
+    [255, 255, 255]
+);
 
 function gradient(top_left, bottom_right) {
+    let total_diagonals = c.width+c.height-1
     for (let x = 0; x < 300; x++){
         for (let y = 0; y < 300; y++){
             var diagonal = x + y;
             var pixel_color = [0, 0, 0];
             for (let idx = 0; idx < 3; idx++){
-                var color = (top_left[idx] * (c.width+c.height-1-diagonal)/(c.width+c.height-1)) + (bottom_right[idx] * (0+diagonal)/(c.width+c.height-1));
+                var color = (top_left[idx] * (total_diagonals-diagonal)/total_diagonals) + (bottom_right[idx] * diagonal/total_diagonals);
                 pixel_color[idx] = color;
             }
             setPixel(x, y, pixel_color)
