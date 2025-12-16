@@ -67,13 +67,15 @@ gradient_button.addEventListener('click', (event) => {
 
 
 function manhattan_gradient(top_left, bottom_right) {
-    let diagonal_manhattan_dist = m_c.width+m_c.height;
     for (let x = 0; x < m_c.height; x++){
         for (let y = 0; y < m_c.width ; y++){
-            var manhattan_dist = x + y;
+            var distance_to_top = (x-0)+(y-0)
+            var distance_to_bottom = (x-300)+(y-300)
+            var sum = distance_to_bottom+distance_to_top;
             var pixel_color = [0, 0, 0];
+            
             for (let idx = 0; idx < 3; idx++){
-                var color = (top_left[idx] * (diagonal_manhattan_dist - manhattan_dist)/diagonal_manhattan_dist) + (bottom_right[idx] * manhattan_dist/diagonal_manhattan_dist);
+                var color = ((top_left[idx]*((sum-distance_to_top)/sum)) + (bottom_right[idx]*((sum-distance_to_bottom)/sum)));
                 pixel_color[idx] = color;
             }
             m_setPixel(x, y, pixel_color)
