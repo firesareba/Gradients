@@ -22,6 +22,8 @@ const e_c = document.getElementById("euclidean-gradient-surface");
 let m_ctx = m_c.getContext("2d");
 let e_ctx = e_c.getContext("2d");
 const color_picker = document.getElementById("color-picker");
+const exponent_picker = document.getElementById("exponent-picker");
+const exponent_value = document.getElementById("exponent-value");
 const set_button = document.getElementById("set-color");
 const gradient_button = document.getElementById("set-gradient");
 
@@ -42,6 +44,29 @@ for (let x = 0; x < e_c.height; x++){
         setPixel(x, y, [255, 255, 255], 1);
     }
 }
+
+//listeners
+exponent_picker.addEventListener('change', (event) => {
+    exponent_value.innerHTML = `Exponent Value: ${exponent_picker.value}`;
+
+    if (bottom_right){
+        gradient(
+            [[[0, 0], top_left], 
+            [[m_c.width, 0], top_right], 
+            [[0, m_c.height], bottom_left], 
+            [[m_c.width, m_c.height], bottom_right]],
+            0
+        );
+        gradient(
+            [[[0, 0], top_left], 
+            [[m_c.width, 0], top_right], 
+            [[0, m_c.height], bottom_left], 
+            [[m_c.width, m_c.height], bottom_right]],
+            1
+        );
+    }
+}
+);
 
 set_button.addEventListener('click', (event) => {
     console.log(getRGB())
@@ -127,7 +152,7 @@ function get_distance(x1, y1, x2, y2, grad_method){
         console.log("0 or 1 for manhattan or euclidean respectively. This request did not go through");
         return;
     }
-    return original_distance ** 4;
+    return original_distance ** exponent_picker.value;
 }
 
 function getRGB() {
