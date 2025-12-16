@@ -21,16 +21,14 @@ const m_c = document.getElementById("manhattan-gradient-surface");
 const e_c = document.getElementById("euclidean-gradient-surface");
 let m_ctx = m_c.getContext("2d");
 let e_ctx = e_c.getContext("2d");
-const color_picker = document.getElementById("color-picker");
 const exponent_picker = document.getElementById("exponent-picker");
 const exponent_value = document.getElementById("exponent-value");
-const set_button = document.getElementById("set-color");
 const gradient_button = document.getElementById("set-gradient");
 
-var top_left;
-var top_right;
-var bottom_left;
-var bottom_right;
+const top_left = document.getElementById("top-left-picker");
+const top_right = document.getElementById("top-right-picker");
+const bottom_left = document.getElementById("bottom-left-picker");
+const bottom_right = document.getElementById("bottom-right-picker");
 
 //make white
 for (let x = 0; x < m_c.height; x++){
@@ -51,49 +49,36 @@ exponent_picker.addEventListener('change', (event) => {
 
     if (bottom_right){
         gradient(
-            [[[0, 0], top_left], 
-            [[m_c.width, 0], top_right], 
-            [[0, m_c.height], bottom_left], 
-            [[m_c.width, m_c.height], bottom_right]],
-            0
+        [[[0, 0], getRGB(top_left.value)], 
+        [[m_c.width, 0], getRGB(top_right.value)], 
+        [[0, m_c.height], getRGB(bottom_left.value)], 
+        [[m_c.width, m_c.height], getRGB(bottom_right.value)]],
+        0
         );
         gradient(
-            [[[0, 0], top_left], 
-            [[m_c.width, 0], top_right], 
-            [[0, m_c.height], bottom_left], 
-            [[m_c.width, m_c.height], bottom_right]],
+            [[[0, 0], getRGB(top_left.value)], 
+            [[m_c.width, 0], getRGB(top_right.value)], 
+            [[0, m_c.height], getRGB(bottom_left.value)], 
+            [[m_c.width, m_c.height], getRGB(bottom_right.value)]],
             1
         );
     }
 }
 );
 
-set_button.addEventListener('click', (event) => {
-    console.log(getRGB())
-    if (!top_left){
-        top_left = getRGB();
-    }else if (!top_right){
-        top_right = getRGB();
-    }else if (!bottom_left){
-        bottom_left = getRGB();
-    }else{
-        bottom_right = getRGB();
-    }
-});
-
 gradient_button.addEventListener('click', (event) => {//colors = [Each color:[[position x,y], [r, g, b]]
     gradient(
-        [[[0, 0], top_left], 
-        [[m_c.width, 0], top_right], 
-        [[0, m_c.height], bottom_left], 
-        [[m_c.width, m_c.height], bottom_right]],
+        [[[0, 0], getRGB(top_left.value)], 
+        [[m_c.width, 0], getRGB(top_right.value)], 
+        [[0, m_c.height], getRGB(bottom_left.value)], 
+        [[m_c.width, m_c.height], getRGB(bottom_right.value)]],
         0
     );
     gradient(
-        [[[0, 0], top_left], 
-        [[m_c.width, 0], top_right], 
-        [[0, m_c.height], bottom_left], 
-        [[m_c.width, m_c.height], bottom_right]],
+        [[[0, 0], getRGB(top_left.value)], 
+        [[m_c.width, 0], getRGB(top_right.value)], 
+        [[0, m_c.height], getRGB(bottom_left.value)], 
+        [[m_c.width, m_c.height], getRGB(bottom_right.value)]],
         1
     );
     console.log("gradiented");
@@ -155,8 +140,7 @@ function get_distance(x1, y1, x2, y2, grad_method){
     return original_distance ** exponent_picker.value;
 }
 
-function getRGB() {
-    let hex = color_picker.value;
+function getRGB(hex) {
     var rgb = [
         hex_to_dec[hex[1]]*16+hex_to_dec[hex[2]],
         hex_to_dec[hex[3]]*16+hex_to_dec[hex[4]],
