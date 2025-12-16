@@ -70,7 +70,7 @@ function manhattan_gradient(top_left, bottom_right) {
     for (let x = 0; x < m_c.height; x++){
         for (let y = 0; y < m_c.width ; y++){
             var distance_to_top = (x-0)+(y-0)
-            var distance_to_bottom = (x-300)+(y-300)
+            var distance_to_bottom = Math.abs(x-300)+Math.abs(y-300)
             var sum = distance_to_bottom+distance_to_top;
             var pixel_color = [0, 0, 0];
             
