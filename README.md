@@ -1,19 +1,16 @@
 # Gradients
 Generating gradients by letting user choose color and positions.
-Notes:
-    Each pixel will be based on the 2(or more) origin colors
-    Then to actually make the gradient there needs to be some sort of weightage based on the distance from the origin colors
-    Since right now i am focusing on 2 color. gradients, we can place them in the top left and bottom right corners
-    top left is (0, 0)
-    bottom right is (300, 300)
-    To make it actually weighted, we can look at diagonals? maybe? BRAINFART: diagonals = x+y = mahattan_distance!
-    Add weightage based on the manhattan_distance
-    KEY OBSERVATION: this will be in the format something_about_top-diagonal and something_about_bottom+diagonal
-    Basically the greater the diagonal, the more of the bottom and less of the top we want
-    top * (1-diagonal) + bottom * (0+diagonal)
-Final approach(take 1):
-    For each pixel in the form (x, y):
-        diagonal = x + y
-        pixel_color = top * (1-diagonal) + bottom * (0+diagonal) // done for each color(r, g, b)
-        setPixel(x, y, pixel_color)
-    //For now, the top and bottom will be hard coded. I will use the input thing later.
+I did this using 2 algorithms, Euclidean and Manhattan.
+
+#Euclidean
+This is done using euclidean geometry to find the distance between 2 points (a^2+b^2=c^2)
+Then, we use this to calculate distance from each source color to the current pixel.
+However, since we need smaller distance -> greater multiplier, we rotate distance around average distance
+Then to make the distance matter more, we added an exponent picker.
+
+
+#Manhattan
+This is done using manhattan distance between 2 points (a+b=c)
+Then, we use this to calculate distance from each source color to the current pixel.
+However, since we need smaller distance -> greater multiplier, we rotate distance around average distance
+Then to make the distance matter more, we added an exponent picker.
