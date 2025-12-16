@@ -33,13 +33,13 @@ var bottom_right;
 //make white
 for (let x = 0; x < m_c.height; x++){
     for (let y = 0; y < m_c.width; y++){
-        m_setPixel(x, y, [255, 255, 255]);
+        setPixel(x, y, [255, 255, 255], 0);
     }
 }
 
 for (let x = 0; x < e_c.height; x++){
     for (let y = 0; y < e_c.width; y++){
-        e_setPixel(x, y, [255, 255, 255]);
+        setPixel(x, y, [255, 255, 255], 1);
     }
 }
 
@@ -57,74 +57,74 @@ set_button.addEventListener('click', (event) => {
 });
 
 gradient_button.addEventListener('click', (event) => {//colors = [Each color:[[position x,y], [r, g, b]]
-    manhattan_gradient([
-        [[0, 0], top_left], 
+    gradient(
+        [[[0, 0], top_left], 
         [[m_c.width, 0], top_right], 
         [[0, m_c.height], bottom_left], 
-        [[m_c.width, m_c.height], bottom_right]
-    ]);
-    euclidean_gradient([
-        [[0, 0], top_left], 
-        [[e_c.width, 0], top_right], 
-        [[0, e_c.height], bottom_left], 
-        [[e_c.width, e_c.height], bottom_right]
-    ]);
+        [[m_c.width, m_c.height], bottom_right]],
+        0
+    );
+    gradient(
+        [[[0, 0], top_left], 
+        [[m_c.width, 0], top_right], 
+        [[0, m_c.height], bottom_left], 
+        [[m_c.width, m_c.height], bottom_right]],
+        1
+    );
     console.log("gradiented");
 });
 
 
-
-function manhattan_gradient(colors) {
+function gradient(colors, grad_method) {
     console.log(colors);
-    for (let x = 0; x < m_c.height; x++){
-        for (let y = 0; y < m_c.width ; y++){
+    console.log(grad_method);
+    
+    var height;
+    var width;
+    if (grad_method == 0){
+        height = m_c.height;
+        width = m_c.width;
+    } else if (grad_method == 1) {
+        height = e_c.height;
+        width = e_c.width;
+    } else {
+        console.log("0 or 1 for manhattan or euclidean respectively. This request did not go through");
+        return;
+    }
+    
+    for (let x = 0; x < height; x++){
+        for (let y = 0; y < width ; y++){
             var sum = 0;
             
             for (const source of colors){
-                sum += Math.abs(source[0][0]-x) + Math.abs(source[0][1]-y);
+                sum += get_distance(source[0][0], source[0][1], x, y, grad_method);
             }
             let avg = sum / colors.length;
-
+            
             var pixel_color = [0, 0, 0];
             for (let idx = 0; idx < 3; idx++){
                 var color = 0;
                 for (const source of colors){
-                    var distance = Math.abs(source[0][0]-x) + Math.abs(source[0][1]-y);
+                    var distance = get_distance(source[0][0], source[0][1], x, y, grad_method);
                     var multiplier = ((avg-distance)*2 + distance) / sum;
                     color += source[1][idx] * multiplier;
                 }
-
+                
                 pixel_color[idx] = color;
             }
-            m_setPixel(x, y, pixel_color)
+            setPixel(x, y, pixel_color, grad_method)
         }
     }
 }
 
-function euclidean_gradient(colors) {
-    console.log(colors);
-    for (let x = 0; x < e_c.height; x++){
-        for (let y = 0; y < e_c.width ; y++){
-            var sum = 0;
-            
-            for (const source of colors){
-                sum += (source[0][0]-x)**2 + (source[0][1]-y)**2;
-            }
-            let avg = sum / colors.length;
-
-            var pixel_color = [0, 0, 0];
-            for (let idx = 0; idx < 3; idx++){
-                var color = 0;
-                for (const source of colors){
-                    var distance = (source[0][0]-x)**2 + (source[0][1]-y)**2;
-                    var multiplier = ((avg-distance)*2 + distance) / sum;
-                    color += source[1][idx] * multiplier;
-                }
-
-                pixel_color[idx] = color;
-            }
-            e_setPixel(x, y, pixel_color)
-        }
+function get_distance(x1, y1, x2, y2, grad_method){
+    if (grad_method == 0){
+        return Math.abs(x1-x2) + Math.abs(y1-y2);
+    } else if (grad_method == 1) {
+        return (x1-x2)**2 + (y1-y2)**2;
+    } else {
+        console.log("0 or 1 for manhattan or euclidean respectively. This request did not go through");
+        return;
     }
 }
 
@@ -138,12 +138,14 @@ function getRGB() {
     return rgb;
 }
 
-function m_setPixel(x, y, rgb) {
-    m_ctx.fillStyle = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
-    m_ctx.fillRect(x, y, 1, 1)
-}
-
-function e_setPixel(x, y, rgb) {
-    e_ctx.fillStyle = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
-    e_ctx.fillRect(x, y, 1, 1)
+function setPixel(x, y, rgb, grad_method) {
+    if (grad_method == 0){
+        m_ctx.fillStyle = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
+        m_ctx.fillRect(x, y, 1, 1)
+    } else if (grad_method == 1) {
+        e_ctx.fillStyle = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
+        e_ctx.fillRect(x, y, 1, 1)
+    } else {
+        console.log("0 or 1 for manhattan or euclidean respectively. This request did not go through");
+    }
 }
