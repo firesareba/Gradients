@@ -118,14 +118,16 @@ function gradient(colors, grad_method) {
 }
 
 function get_distance(x1, y1, x2, y2, grad_method){
+    var original_distance
     if (grad_method == 0){
-        return Math.abs(x1-x2) + Math.abs(y1-y2);
+        original_distance = Math.abs(x1-x2) + Math.abs(y1-y2);
     } else if (grad_method == 1) {
-        return (x1-x2)**2 + (y1-y2)**2;
+        original_distance = ((x1-x2)**2 + (y1-y2)**2)**0.5;
     } else {
         console.log("0 or 1 for manhattan or euclidean respectively. This request did not go through");
         return;
     }
+    return original_distance ** 4;
 }
 
 function getRGB() {
