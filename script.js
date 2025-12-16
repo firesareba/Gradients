@@ -60,22 +60,29 @@ set_button.addEventListener('click', (event) => {
 });
 
 gradient_button.addEventListener('click', (event) => {
-    manhattan_gradient(top_left, bottom_right);
+    manhattan_gradient([[[0, 0], top_left], [[300, 300,], bottom_right]]);//colors = [Each color:[[position x,y], [r, g, b]]
     euclidean_gradient(top_left, bottom_right);
 });
 
 
 
-function manhattan_gradient(top_left, bottom_right) {
+function manhattan_gradient(colors) {
+    console.log(colors);
     for (let x = 0; x < m_c.height; x++){
         for (let y = 0; y < m_c.width ; y++){
-            var distance_to_top = (x-0)+(y-0)
-            var distance_to_bottom = Math.abs(x-300)+Math.abs(y-300)
-            var sum = distance_to_bottom+distance_to_top;
-            var pixel_color = [0, 0, 0];
+            var sum = 0;
             
+            for (const color of colors){
+                sum += Math.abs(color[0][0]-x) + Math.abs(color[0][1]-y);
+            }
+
+            var pixel_color = [0, 0, 0];
             for (let idx = 0; idx < 3; idx++){
-                var color = ((top_left[idx]*((sum-distance_to_top)/sum)) + (bottom_right[idx]*((sum-distance_to_bottom)/sum)));
+                var color = 0;
+                for (const source of colors){
+                    color += source[1][idx]*((sum-(Math.abs(source[0][0]-x) + Math.abs(source[0][1]-y)))/sum);
+                }
+
                 pixel_color[idx] = color;
             }
             m_setPixel(x, y, pixel_color)
