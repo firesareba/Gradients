@@ -27,6 +27,7 @@ const gradient_button = document.getElementById("set-gradient");
 
 var top_left;
 var bottom_right;
+var middle;
 
 //make white
 for (let x = 0; x < m_c.height; x++){
@@ -41,32 +42,35 @@ for (let x = 0; x < e_c.height; x++){
     }
 }
 
-// color_picker.addEventListener('change', (event) => {
-//     for (let x = 0; x < c.height; x++){
-//         for (let y = 0; y < c.width; y++){
-//             setPixel(x, y, getRGB());
-//         }
-//     }
-// }
-//);
-
 set_button.addEventListener('click', (event) => {
     console.log(getRGB())
     if (!top_left){
         top_left = getRGB();
-    }else if (!bottom_right){
+    }else if (!middle){
+        middle = getRGB();
+    }else{
         bottom_right = getRGB();
     }
 });
 
-gradient_button.addEventListener('click', (event) => {
-    manhattan_gradient([[[0, 0], top_left], [[300, 300,], bottom_right]]);//colors = [Each color:[[position x,y], [r, g, b]]
-    euclidean_gradient([[[0, 0], top_left], [[300, 300,], bottom_right]]);
+gradient_button.addEventListener('click', (event) => {//colors = [Each color:[[position x,y], [r, g, b]]
+    manhattan_gradient([
+        [[0, 0], top_left], 
+        [[m_c.width/2, m_c.height/2], middle], 
+        [[m_c.width, m_c.height], bottom_right]
+    ]);
+    euclidean_gradient([
+        [[0, 0], top_left], 
+        [[e_c.width/2, e_c.height/2], middle], 
+        [[e_c.width, e_c.height], bottom_right]
+    ]);
+    console.log("gradiented");
 });
 
 
 
 function manhattan_gradient(colors) {
+    console.log(colors);
     for (let x = 0; x < m_c.height; x++){
         for (let y = 0; y < m_c.width ; y++){
             var sum = 0;
@@ -90,6 +94,7 @@ function manhattan_gradient(colors) {
 }
 
 function euclidean_gradient(colors) {
+    console.log(colors);
     for (let x = 0; x < m_c.height; x++){
         for (let y = 0; y < m_c.width ; y++){
             var sum = 0;
