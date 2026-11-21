@@ -38,7 +38,7 @@ const bottom_left = document.getElementById("bottom-left-picker");
 const bottom_right = document.getElementById("bottom-right-picker");
 
 let sources = [new colorSource(0, 0, top_left.value), new colorSource(surface.width, 0, top_right.value), new colorSource(0, surface.height, bottom_left.value), new colorSource(surface.width, surface.height, bottom_right.value)];
-let possibleSource;
+let sourceModal;
 
 //make white
 for (let x = 0; x < surface.height; x++){
@@ -61,17 +61,28 @@ gradient_button.addEventListener('click', (event) => {
 });
 
 surface.addEventListener('click', (event) => {
-    if (possibleSource){
-        document.body.removeChild(possibleSource);
+    if (sourceModal){
+        document.body.removeChild(sourceModal);
     }
 
-    possibleSource = document.createElement('input');
-    possibleSource.type = 'color';
-    possibleSource.value = "#ff0000"
-    possibleSource.style.position = 'absolute';
-    possibleSource.style.left = `${event.clientX}px`;
-    possibleSource.style.top = `${event.clientY}px`;
-    document.body.appendChild(possibleSource);
+
+    //modal with color, dist type, and submit button
+    sourceModal = document.createElement('div');
+    
+    var colorPicker = document.createElement('input');
+    colorPicker.type = 'color';
+    colorPicker.value = "#ff0000"
+    colorPicker.style.position = 'absolute';
+    colorPicker.style.left = `${event.clientX}px`;
+    colorPicker.style.top = `${event.clientY}px`;
+    sourceModal.appendChild(colorPicker);
+    
+    document.body.appendChild(sourceModal);
+
+    //some logic to see if they confirmed
+    sources.push(new colorSource(event.offsetX, event.offsetY, getRGB(colorPicker.value)));
+    document.body.removeChild(colorPicker);
+    sourceModal = null;
 }
 );
 
