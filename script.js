@@ -68,21 +68,25 @@ surface.addEventListener('click', (event) => {
 
     //modal with color, dist type, and submit button
     sourceModal = document.createElement('div');
+    sourceModal.style.position = 'absolute';
+    sourceModal.style.left = `${event.clientX}px`;
+    sourceModal.style.top = `${event.clientY}px`;
     
     var colorPicker = document.createElement('input');
     colorPicker.type = 'color';
     colorPicker.value = "#ff0000"
-    colorPicker.style.position = 'absolute';
-    colorPicker.style.left = `${event.clientX}px`;
-    colorPicker.style.top = `${event.clientY}px`;
     sourceModal.appendChild(colorPicker);
+
+    var confirmationButton = document.createElement('button');
+    confirmationButton.innerHTML = "Ok";
+    sourceModal.appendChild(confirmationButton);
     
     document.body.appendChild(sourceModal);
 
     //some logic to see if they confirmed
-    sources.push(new colorSource(event.offsetX, event.offsetY, getRGB(colorPicker.value)));
-    document.body.removeChild(colorPicker);
-    sourceModal = null;
+    // sources.push(new colorSource(event.offsetX, event.offsetY, getRGB(colorPicker.value)));
+    // document.body.removeChild(colorPicker);
+    // sourceModal = null;
 }
 );
 
