@@ -36,7 +36,9 @@ const top_left = document.getElementById("top-left-picker");
 const top_right = document.getElementById("top-right-picker");
 const bottom_left = document.getElementById("bottom-left-picker");
 const bottom_right = document.getElementById("bottom-right-picker");
+
 let sources = [new colorSource(0, 0, top_left.value), new colorSource(surface.width, 0, top_right.value), new colorSource(0, surface.height, bottom_left.value), new colorSource(surface.width, surface.height, bottom_right.value)];
+let possibleSource;
 
 //make white
 for (let x = 0; x < surface.height; x++){
@@ -59,19 +61,19 @@ gradient_button.addEventListener('click', (event) => {
 });
 
 surface.addEventListener('click', (event) => {
-    getColorInput(event.clientX, event.clientY);
+    if (possibleSource){
+        document.body.removeChild(possibleSource);
+    }
+
+    possibleSource = document.createElement('input');
+    possibleSource.type = 'color';
+    possibleSource.value = "#ff0000"
+    possibleSource.style.position = 'absolute';
+    possibleSource.style.left = `${event.clientX}px`;
+    possibleSource.style.top = `${event.clientY}px`;
+    document.body.appendChild(possibleSource);
 }
 );
-
-function getColorInput(x, y){
-    var newInput = document.createElement('input');
-    newInput.type = 'color';
-    newInput.value = "#ff0000"
-    newInput.style.position = 'absolute';
-    newInput.style.left = `${x}px`;
-    newInput.style.top = `${y}px`;
-    document.body.appendChild(newInput);
-}
 
 function gradient(colors) {
     var height = surface.height;
