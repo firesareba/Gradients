@@ -17,12 +17,11 @@ const hex_to_dec = {
     'f':15,
 };
 
-const m_c = document.getElementById("manhattan-gradient-surface");
-const e_c = document.getElementById("euclidean-gradient-surface");
-let m_ctx = m_c.getContext("2d");
-let e_ctx = e_c.getContext("2d");
+const surface = document.getElementById("gradient-surface");
+let ctx = surface.getContext("2d");
 const exponent_picker = document.getElementById("exponent-picker");
 const exponent_value = document.getElementById("exponent-value");
+const dist_method_picker = document.getElementById("distance-type");
 const gradient_button = document.getElementById("set-gradient");
 
 const top_left = document.getElementById("top-left-picker");
@@ -31,15 +30,9 @@ const bottom_left = document.getElementById("bottom-left-picker");
 const bottom_right = document.getElementById("bottom-right-picker");
 
 //make white
-for (let x = 0; x < m_c.height; x++){
-    for (let y = 0; y < m_c.width; y++){
+for (let x = 0; x < surface.height; x++){
+    for (let y = 0; y < surface.width; y++){
         setPixel(x, y, [255, 255, 255], 0);
-    }
-}
-
-for (let x = 0; x < e_c.height; x++){
-    for (let y = 0; y < e_c.width; y++){
-        setPixel(x, y, [255, 255, 255], 1);
     }
 }
 
@@ -50,17 +43,9 @@ exponent_picker.addEventListener('change', (event) => {
     if (bottom_right){
         gradient(
         [[[0, 0], getRGB(top_left.value)], 
-        [[m_c.width, 0], getRGB(top_right.value)], 
-        [[0, m_c.height], getRGB(bottom_left.value)], 
-        [[m_c.width, m_c.height], getRGB(bottom_right.value)]],
-        0
-        );
-        gradient(
-            [[[0, 0], getRGB(top_left.value)], 
-            [[m_c.width, 0], getRGB(top_right.value)], 
-            [[0, m_c.height], getRGB(bottom_left.value)], 
-            [[m_c.width, m_c.height], getRGB(bottom_right.value)]],
-            1
+        [[surface.width, 0], getRGB(top_right.value)], 
+        [[0, surface.height], getRGB(bottom_left.value)], 
+        [[surface.width, surface.height], getRGB(bottom_right.value)]]
         );
     }
 }
@@ -69,45 +54,23 @@ exponent_picker.addEventListener('change', (event) => {
 gradient_button.addEventListener('click', (event) => {//colors = [Each color:[[position x,y], [r, g, b]]
     gradient(
         [[[0, 0], getRGB(top_left.value)], 
-        [[m_c.width, 0], getRGB(top_right.value)], 
-        [[0, m_c.height], getRGB(bottom_left.value)], 
-        [[m_c.width, m_c.height], getRGB(bottom_right.value)]],
-        0
+        [[surface.width, 0], getRGB(top_right.value)], 
+        [[0, surface.height], getRGB(bottom_left.value)], 
+        [[surface.width, surface.height], getRGB(bottom_right.value)]]
     );
-    gradient(
-        [[[0, 0], getRGB(top_left.value)], 
-        [[m_c.width, 0], getRGB(top_right.value)], 
-        [[0, m_c.height], getRGB(bottom_left.value)], 
-        [[m_c.width, m_c.height], getRGB(bottom_right.value)]],
-        1
-    );
-    console.log("gradiented");
 });
 
 
-function gradient(colors, grad_method) {
-    console.log(colors);
-    console.log(grad_method);
-    
-    var height;
-    var width;
-    if (grad_method == 0){
-        height = m_c.height;
-        width = m_c.width;
-    } else if (grad_method == 1) {
-        height = e_c.height;
-        width = e_c.width;
-    } else {
-        console.log("0 or 1 for manhattan or euclidean respectively. This request did not go through");
-        return;
-    }
+function gradient(colors, distance_method) {
+    var height = surface.height;
+    var width = surface.width;
     
     for (let x = 0; x < height; x++){
         for (let y = 0; y < width ; y++){
             var sum = 0;
             
             for (const source of colors){
-                sum += get_distance(source[0][0], source[0][1], x, y, grad_method);
+                sum += get_distance(source[0][0], source[0][1], x, y);
             }
             let avg = sum / colors.length;
             
@@ -115,27 +78,25 @@ function gradient(colors, grad_method) {
             for (let idx = 0; idx < 3; idx++){
                 var color = 0;
                 for (const source of colors){
-                    var distance = get_distance(source[0][0], source[0][1], x, y, grad_method);
+                    var distance = get_distance(source[0][0], source[0][1], x, y);
                     var multiplier = ((avg-distance)*2 + distance) / sum;
                     color += source[1][idx] * multiplier;
                 }
                 
                 pixel_color[idx] = color;
             }
-            setPixel(x, y, pixel_color, grad_method)
+            setPixel(x, y, pixel_color)
         }
     }
 }
 
-function get_distance(x1, y1, x2, y2, grad_method){
+function get_distance(x1, y1, x2, y2){
     var original_distance
-    if (grad_method == 0){
+    var distance_method = dist_method_picker.value;
+    if (distance_method == "manhattan"){
         original_distance = Math.abs(x1-x2) + Math.abs(y1-y2);
-    } else if (grad_method == 1) {
+    } else if (distance_method == "euclidean"){
         original_distance = ((x1-x2)**2 + (y1-y2)**2)**0.5;
-    } else {
-        console.log("0 or 1 for manhattan or euclidean respectively. This request did not go through");
-        return;
     }
     return original_distance ** exponent_picker.value;
 }
@@ -149,14 +110,7 @@ function getRGB(hex) {
     return rgb;
 }
 
-function setPixel(x, y, rgb, grad_method) {
-    if (grad_method == 0){
-        m_ctx.fillStyle = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
-        m_ctx.fillRect(x, y, 1, 1)
-    } else if (grad_method == 1) {
-        e_ctx.fillStyle = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
-        e_ctx.fillRect(x, y, 1, 1)
-    } else {
-        console.log("0 or 1 for manhattan or euclidean respectively. This request did not go through");
-    }
+function setPixel(x, y, rgb) {
+        ctx.fillStyle = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
+        ctx.fillRect(x, y, 1, 1)
 }

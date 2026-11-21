@@ -7,15 +7,25 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <canvas id="manhattan-gradient-surface" width="500" height="500"></canvas>
-    <canvas id="euclidean-gradient-surface" width="500" height="500"></canvas>
+    <canvas id="gradient-surface" width="500" height="500"></canvas>
+    
+    <select id="distance-type">
+        <option value="euclidean">Euclidean</option>
+        <option value="manhattan">Manhattan</option>
+        <option value="chebyshev">Chebyshev</option>
+        <option value="weighted-chebyshev">Weighted Chebyshev</option>
+        <option value="arc-length">Arc length</option>
+        <option value="average-axis">Average Axis</option>
+    </select>
 
-    <input id="top-left-picker" type="color" value="#ff0000">
-    <input id="top-right-picker" type="color" value="#ff0000">
-    <input id="bottom-left-picker" type="color" value="#ff0000">
-    <input id="bottom-right-picker" type="color" value="#ff0000">
+    <div class="colors">
+        <input id="top-left-picker" type="color" value="#ff0000">
+        <input id="top-right-picker" type="color" value="#ff0000">
+        <input id="bottom-left-picker" type="color" value="#ff0000">
+        <input id="bottom-right-picker" type="color" value="#ff0000">
+    </div>
 
-    <p id="exponent-value"> Exponent Value: 4</p>
+    <p id="exponent-value"> Exponent Value: 4</p><!-- Need to explain what this does better(implement strenght later)-->
     <input id="exponent-picker" type="range" min="0" max="15" value="4">
     
     <button id="set-gradient">Create Gradient</button>
