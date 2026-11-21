@@ -71,22 +71,24 @@ surface.addEventListener('click', (event) => {
     sourceModal.style.position = 'absolute';
     sourceModal.style.left = `${event.clientX}px`;
     sourceModal.style.top = `${event.clientY}px`;
+    sourceModal.style.backgroundColor = "BurlyWood";
+    sourceModal.style.display = "flex";
+    sourceModal.style.padding = "0.5%";
     
     var colorPicker = document.createElement('input');
     colorPicker.type = 'color';
     colorPicker.value = "#ff0000"
     sourceModal.appendChild(colorPicker);
-
+    
     var confirmationButton = document.createElement('button');
     confirmationButton.innerHTML = "Ok";
     sourceModal.appendChild(confirmationButton);
     
     document.body.appendChild(sourceModal);
+    sourceModal.style.borderRadius = `${sourceModal.clientHeight*0.25}px`;
 
     //some logic to see if they confirmed
     // sources.push(new colorSource(event.offsetX, event.offsetY, getRGB(colorPicker.value)));
-    // document.body.removeChild(colorPicker);
-    // sourceModal = null;
 }
 );
 
