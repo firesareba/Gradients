@@ -1,3 +1,11 @@
+class colorSource{
+    constructor(x, y, hex){
+        this.x = x;
+        this.y = y;
+        this.rgb = getRGB(hex);
+    }
+}
+
 const hex_to_dec = {
     '0':0,
     '1':1,
@@ -18,7 +26,7 @@ const hex_to_dec = {
 };
 
 const surface = document.getElementById("gradient-surface");
-let ctx = surface.getContext("2d");
+const ctx = surface.getContext("2d");
 const exponent_picker = document.getElementById("exponent-picker");
 const exponent_value = document.getElementById("exponent-value");
 const dist_method_picker = document.getElementById("distance-type");
@@ -28,6 +36,7 @@ const top_left = document.getElementById("top-left-picker");
 const top_right = document.getElementById("top-right-picker");
 const bottom_left = document.getElementById("bottom-left-picker");
 const bottom_right = document.getElementById("bottom-right-picker");
+let sources = [new colorSource(0, 0, top_left.value), new colorSource(surface.width, 0, top_right.value), new colorSource(0, surface.height, bottom_left.value), new colorSource(surface.width, surface.height, bottom_right.value)];
 
 //make white
 for (let x = 0; x < surface.height; x++){
@@ -39,29 +48,24 @@ for (let x = 0; x < surface.height; x++){
 //listeners
 exponent_picker.addEventListener('change', (event) => {
     exponent_value.innerHTML = `Exponent Value: ${exponent_picker.value}`;
-
-    if (bottom_right){
-        gradient(
-        [[[0, 0], getRGB(top_left.value)], 
-        [[surface.width, 0], getRGB(top_right.value)], 
-        [[0, surface.height], getRGB(bottom_left.value)], 
-        [[surface.width, surface.height], getRGB(bottom_right.value)]]
-        );
-    }
+    updateSources();
+    gradient();
 }
 );
 
-gradient_button.addEventListener('click', (event) => {//colors = [Each color:[[position x,y], [r, g, b]]
-    gradient(
-        [[[0, 0], getRGB(top_left.value)], 
-        [[surface.width, 0], getRGB(top_right.value)], 
-        [[0, surface.height], getRGB(bottom_left.value)], 
-        [[surface.width, surface.height], getRGB(bottom_right.value)]]
-    );
+gradient_button.addEventListener('click', (event) => {
+    updateSources();
+    gradient();
 });
 
+function updateSources(){
+    sources[0].rgb = getRGB(top_left.value);
+    sources[1].rgb = getRGB(top_right.value);
+    sources[2].rgb = getRGB(bottom_left.value);
+    sources[3].rgb = getRGB(bottom_right.value);
+}
 
-function gradient(colors, distance_method) {
+function gradient(colors) {
     var height = surface.height;
     var width = surface.width;
     
@@ -69,18 +73,18 @@ function gradient(colors, distance_method) {
         for (let y = 0; y < width ; y++){
             var sum = 0;
             
-            for (const source of colors){
-                sum += get_distance(source[0][0], source[0][1], x, y);
+            for (const source of sources){
+                sum += get_distance(source.x, source.y, x, y);
             }
-            let avg = sum / colors.length;
+            let avg = sum / sources.length;
             
             var pixel_color = [0, 0, 0];
             for (let idx = 0; idx < 3; idx++){
                 var color = 0;
-                for (const source of colors){
-                    var distance = get_distance(source[0][0], source[0][1], x, y);
+                for (const source of sources){
+                    var distance = get_distance(source.x, source.y, x, y);
                     var multiplier = ((avg-distance)*2 + distance) / sum;
-                    color += source[1][idx] * multiplier;
+                    color += source.rgb[idx] * multiplier;
                 }
                 
                 pixel_color[idx] = color;
