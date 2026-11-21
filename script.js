@@ -67,7 +67,9 @@ function getColorInput(x, y){
     var newInput = document.createElement('input');
     newInput.type = 'color';
     newInput.value = "#ff0000"
-    newInput.style = `position:absolute`;
+    newInput.style.position = 'absolute';
+    newInput.style.left = `${x}px`;
+    newInput.style.top = `${y}px`;
     document.body.appendChild(newInput);
 }
 
