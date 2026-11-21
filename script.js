@@ -58,11 +58,17 @@ gradient_button.addEventListener('click', (event) => {
     gradient();
 });
 
-function updateSources(){
-    sources[0].rgb = getRGB(top_left.value);
-    sources[1].rgb = getRGB(top_right.value);
-    sources[2].rgb = getRGB(bottom_left.value);
-    sources[3].rgb = getRGB(bottom_right.value);
+surface.addEventListener('click', (event) => {
+    getColorInput(event.clientX, event.clientY);
+}
+);
+
+function getColorInput(x, y){
+    var newInput = document.createElement('input');
+    newInput.type = 'color';
+    newInput.value = "#ff0000"
+    newInput.style = `position:absolute`;
+    document.body.appendChild(newInput);
 }
 
 function gradient(colors) {
@@ -74,7 +80,7 @@ function gradient(colors) {
             var sum = 0;
             
             for (const source of sources){
-                sum += get_distance(source.x, source.y, x, y);
+                sum += getDistance(source.x, source.y, x, y);
             }
             let avg = sum / sources.length;
             
@@ -82,7 +88,7 @@ function gradient(colors) {
             for (let idx = 0; idx < 3; idx++){
                 var color = 0;
                 for (const source of sources){
-                    var distance = get_distance(source.x, source.y, x, y);
+                    var distance = getDistance(source.x, source.y, x, y);
                     var multiplier = ((avg-distance)*2 + distance) / sum;
                     color += source.rgb[idx] * multiplier;
                 }
@@ -94,7 +100,7 @@ function gradient(colors) {
     }
 }
 
-function get_distance(x1, y1, x2, y2){
+function getDistance(x1, y1, x2, y2){
     var original_distance
     var distance_method = dist_method_picker.value;
     if (distance_method == "manhattan"){
