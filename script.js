@@ -122,10 +122,6 @@ function getDistance(x1, y1, x2, y2){
         original_distance = ((x1-x2)**2 + (y1-y2)**2)**0.5;
     } else if (distance_method == "chebyshev"){
         original_distance = Math.max(Math.abs(x1-x2)+Math.abs(y1-y2));
-    } else if (distance_method == "weighted-chebyshev"){
-        
-    } else if (distance_method == "arc-length"){
-        
     } else if (distance_method == "avg-axis"){
         original_distance = (Math.abs(x1-x2)+Math.abs(y1-y2))/2;
     }
