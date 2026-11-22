@@ -81,7 +81,7 @@ surface.addEventListener('click', (event) => {
     sourceModal.style.borderRadius = `${sourceModal.clientHeight*0.25}px`;
 
     confirmationButton.addEventListener('click', (_) => {
-        sources.push(new colorSource(event.offsetX, event.offsetY, getRGB(colorPicker.value)));
+        sources.push(new colorSource(event.offsetX, event.offsetY, colorPicker.value));
         document.body.removeChild(sourceModal);
         sourceModal = null;
     })
@@ -91,8 +91,6 @@ surface.addEventListener('click', (event) => {
 function gradient() {
     var height = surface.height;
     var width = surface.width;
-    
-    console.log(sources);
     for (let x = 0; x < height; x++){
         for (let y = 0; y < width ; y++){
             var sum = 0;
