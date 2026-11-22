@@ -89,28 +89,7 @@ surface.addEventListener('click', (event) => {
 function gradient() {
     var height = surface.height;
     var width = surface.width;
-    for (let x = 0; x < height; x++){
-        for (let y = 0; y < width ; y++){
-            var sum = 0;
-            
-            for (const source of sources){
-                sum += getDistance(x, y, source);
-            }
-            let avg = sum / sources.length;
-            
-            var pixel_color = [0, 0, 0];
-            for (const source of sources){
-                var distance = getDistance(x, y, source);
-                var multiplier = (2*avg-distance) / sum;
-
-                for (let idx = 0; idx < 3; idx++){
-                    pixel_color[idx] += source.rgb[idx] * multiplier;
-                }
-            }
-                
-            setPixel(x, y, pixel_color)
-        }
-    }
+    
 }
 
 function getDistance(x1, y1, source){
