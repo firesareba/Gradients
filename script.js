@@ -32,12 +32,7 @@ const exponent_value = document.getElementById("exponent-value");
 const dist_method_picker = document.getElementById("distance-type");
 const gradient_button = document.getElementById("set-gradient");
 
-const top_left = document.getElementById("top-left-picker");
-const top_right = document.getElementById("top-right-picker");
-const bottom_left = document.getElementById("bottom-left-picker");
-const bottom_right = document.getElementById("bottom-right-picker");
-
-let sources = [new colorSource(0, 0, top_left.value), new colorSource(surface.width, 0, top_right.value), new colorSource(0, surface.height, bottom_left.value), new colorSource(surface.width, surface.height, bottom_right.value)];
+let sources = [];
 let sourceModal;
 
 //make white
@@ -50,13 +45,11 @@ for (let x = 0; x < surface.height; x++){
 //listeners
 exponent_picker.addEventListener('change', (event) => {
     exponent_value.innerHTML = `Exponent Value: ${exponent_picker.value}`;
-    updateSources();
     gradient();
 }
 );
 
 gradient_button.addEventListener('click', (event) => {
-    updateSources();
     gradient();
 });
 
@@ -87,15 +80,19 @@ surface.addEventListener('click', (event) => {
     document.body.appendChild(sourceModal);
     sourceModal.style.borderRadius = `${sourceModal.clientHeight*0.25}px`;
 
-    //some logic to see if they confirmed
-    // sources.push(new colorSource(event.offsetX, event.offsetY, getRGB(colorPicker.value)));
+    confirmationButton.addEventListener('click', (_) => {
+        sources.push(new colorSource(event.offsetX, event.offsetY, getRGB(colorPicker.value)));
+        document.body.removeChild(sourceModal);
+        sourceModal = null;
+    })
 }
 );
 
-function gradient(colors) {
+function gradient() {
     var height = surface.height;
     var width = surface.width;
     
+    console.log(sources);
     for (let x = 0; x < height; x++){
         for (let y = 0; y < width ; y++){
             var sum = 0;
@@ -106,16 +103,15 @@ function gradient(colors) {
             let avg = sum / sources.length;
             
             var pixel_color = [0, 0, 0];
-            for (let idx = 0; idx < 3; idx++){
-                var color = 0;
-                for (const source of sources){
-                    var distance = getDistance(source.x, source.y, x, y);
-                    var multiplier = ((avg-distance)*2 + distance) / sum;
-                    color += source.rgb[idx] * multiplier;
+            for (const source of sources){
+                var distance = getDistance(source.x, source.y, x, y);
+                var multiplier = (2*avg-distance) / sum;
+
+                for (let idx = 0; idx < 3; idx++){
+                    pixel_color[idx] += source.rgb[idx] * multiplier;
                 }
-                
-                pixel_color[idx] = color;
             }
+                
             setPixel(x, y, pixel_color)
         }
     }
