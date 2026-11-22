@@ -1,7 +1,8 @@
 class colorSource{
-    constructor(x, y, hex){
+    constructor(x, y, strength, hex){
         this.x = x;
         this.y = y;
+        this.strength = strength;
         this.rgb = getRGB(hex);
     }
 }
@@ -27,10 +28,7 @@ const hex_to_dec = {
 
 const surface = document.getElementById("gradient-surface");
 const ctx = surface.getContext("2d");
-const exponent_picker = document.getElementById("exponent-picker");
-const exponent_value = document.getElementById("exponent-value");
 const dist_method_picker = document.getElementById("distance-type");
-const gradient_button = document.getElementById("set-gradient");
 
 let sources = [];
 let sourceModal;
@@ -43,15 +41,10 @@ for (let x = 0; x < surface.height; x++){
 }
 
 //listeners
-exponent_picker.addEventListener('change', (event) => {
-    exponent_value.innerHTML = `Exponent Value: ${exponent_picker.value}`;
+dist_method_picker.addEventListener('change', (event) => {
     gradient();
 }
 );
-
-gradient_button.addEventListener('click', (event) => {
-    gradient();
-});
 
 surface.addEventListener('click', (event) => {
     if (sourceModal){
@@ -70,6 +63,12 @@ surface.addEventListener('click', (event) => {
     colorPicker.type = 'color';
     colorPicker.value = "#ff0000"
     sourceModal.appendChild(colorPicker);
+
+    var strengthPicker = document.createElement('input');
+    strengthPicker.type = "range";
+    strengthPicker.min = 1;
+    strengthPicker.max = 4;
+    sourceModal.appendChild(strengthPicker);
     
     var confirmationButton = document.createElement('button');
     confirmationButton.innerHTML = "Ok";
@@ -79,9 +78,10 @@ surface.addEventListener('click', (event) => {
     sourceModal.style.borderRadius = `${sourceModal.clientHeight*0.25}px`;
 
     confirmationButton.addEventListener('click', (_) => {
-        sources.push(new colorSource(event.offsetX, event.offsetY, colorPicker.value));
+        sources.push(new colorSource(event.offsetX, event.offsetY, strengthPicker.value, colorPicker.value));
         document.body.removeChild(sourceModal);
         sourceModal = null;
+        gradient();
     })
 }
 );
@@ -94,13 +94,13 @@ function gradient() {
             var sum = 0;
             
             for (const source of sources){
-                sum += getDistance(source.x, source.y, x, y);
+                sum += getDistance(x, y, source);
             }
             let avg = sum / sources.length;
             
             var pixel_color = [0, 0, 0];
             for (const source of sources){
-                var distance = getDistance(source.x, source.y, x, y);
+                var distance = getDistance(x, y, source);
                 var multiplier = (2*avg-distance) / sum;
 
                 for (let idx = 0; idx < 3; idx++){
@@ -113,20 +113,20 @@ function gradient() {
     }
 }
 
-function getDistance(x1, y1, x2, y2){
+function getDistance(x1, y1, source){
     var original_distance
     var distance_method = dist_method_picker.value;
     if (distance_method == "manhattan"){
-        original_distance = Math.abs(x1-x2) + Math.abs(y1-y2);
+        original_distance = Math.abs(x1-source.x) + Math.abs(y1-source.y);
     } else if (distance_method == "euclidean"){
-        original_distance = ((x1-x2)**2 + (y1-y2)**2)**0.5;
+        original_distance = ((x1-source.x)**2 + (y1-source.y)**2)**0.5;
     } else if (distance_method == "chebyshev"){
-        original_distance = Math.max(Math.abs(x1-x2)+Math.abs(y1-y2));
+        original_distance = Math.max(Math.abs(x1-source.x)+Math.abs(y1-source.y));
     } else if (distance_method == "avg-axis"){
-        original_distance = (Math.abs(x1-x2)+Math.abs(y1-y2))/2;
+        original_distance = (Math.abs(x1-source.x)+Math.abs(y1-source.y))/2;
     }
 
-    return original_distance ** exponent_picker.value;
+    return original_distance ** source.strength;
 }
 
 function getRGB(hex) {
