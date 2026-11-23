@@ -1,8 +1,7 @@
 class colorSource{
-    constructor(x, y, strength, hex){
+    constructor(x, y, hex){
         this.x = x;
         this.y = y;
-        this.strength = strength;
         this.rgb = getRGB(hex);
     }
 }
@@ -64,11 +63,6 @@ surface.addEventListener('click', (event) => {
     colorPicker.value = "#ff0000"
     sourceModal.appendChild(colorPicker);
 
-    var strengthPicker = document.createElement('input');
-    strengthPicker.type = "range";
-    strengthPicker.min = 1;
-    strengthPicker.max = 4;
-    sourceModal.appendChild(strengthPicker);
     
     var confirmationButton = document.createElement('button');
     confirmationButton.innerHTML = "Ok";
@@ -78,7 +72,7 @@ surface.addEventListener('click', (event) => {
     sourceModal.style.borderRadius = `${sourceModal.clientHeight*0.25}px`;
 
     confirmationButton.addEventListener('click', (_) => {
-        sources.push(new colorSource(event.offsetX, event.offsetY, strengthPicker.value, colorPicker.value));
+        sources.push(new colorSource(event.offsetX, event.offsetY, colorPicker.value));
         document.body.removeChild(sourceModal);
         sourceModal = null;
         gradient();
@@ -126,7 +120,7 @@ function getDistance(x1, y1, source){
         original_distance = (Math.abs(x1-source.x)+Math.abs(y1-source.y))/2;
     }
 
-    return original_distance ** source.strength;
+    return original_distance ** 4;
 }
 
 function getRGB(hex) {
