@@ -92,19 +92,13 @@ function gradient() {
     for (let x = 0; x < height; x++){
         for (let y = 0; y < width ; y++){
             var sum = 0;
-            
-            for (const source of sources){
-                sum += getDistance(x, y, source);
-            }
-            let avg = sum / sources.length;
-            
             var pixel_color = [0, 0, 0];
+
             for (const source of sources){
                 var distance = getDistance(x, y, source);
-                var multiplier = (2*avg-distance) / sum;
-
+                var influence = Math.max(0, source.strength-distance);
                 for (let idx = 0; idx < 3; idx++){
-                    pixel_color[idx] += source.rgb[idx] * multiplier;
+                    pixel_color[idx] += source.rgb[idx]*influence;
                 }
             }
                 
@@ -125,7 +119,7 @@ function getDistance(x, y, source){
         original_distance = Math.max(Math.abs(x-source.x), Math.abs(y-source.y));
     }
 
-    return Math.pow(original_distance, source.strength);
+    return original_distance;
 }
 
 function getRGB(hex) {
@@ -138,6 +132,10 @@ function getRGB(hex) {
 }
 
 function setPixel(x, y, rgb) {
-        ctx.fillStyle = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
-        ctx.fillRect(x, y, 1, 1)
+    for (let i=0; i<3; i++){
+        rgb[i] = Math.min(255, rgb[i]);
+    }
+
+    ctx.fillStyle = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
+    ctx.fillRect(x, y, 1, 1)
 }
