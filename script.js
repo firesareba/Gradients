@@ -67,7 +67,7 @@ surface.addEventListener('click', (event) => {
     var strengthPicker = document.createElement('input');
     strengthPicker.type = "range";
     strengthPicker.min = 1;
-    strengthPicker.max = 4;
+    strengthPicker.max = 700;
     sourceModal.appendChild(strengthPicker);
     
     var confirmationButton = document.createElement('button');
