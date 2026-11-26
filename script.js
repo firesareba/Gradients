@@ -114,14 +114,15 @@ function gradient() {
 }
 
 function getDistance(x, y, source){
-    var original_distance
+    var original_distance;
     var distance_method = dist_method_picker.value;
+    
     if (distance_method == "manhattan"){
         original_distance = Math.abs(x-source.x) + Math.abs(y-source.y);
     } else if (distance_method == "euclidean"){
         original_distance = Math.hypot(x-source.x, y-source.y);
     } else if (distance_method == "chebyshev"){
-        original_distance = Math.max(Math.abs(x-source.x)+Math.abs(y-source.y));
+        original_distance = Math.max(Math.abs(x-source.x), Math.abs(y-source.y));
     }
 
     return Math.pow(original_distance, source.strength);
