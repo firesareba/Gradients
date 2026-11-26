@@ -1,7 +1,8 @@
 class colorSource{
-    constructor(x, y, hex){
+    constructor(x, y, strength, hex){
         this.x = x;
         this.y = y;
+        this.strength = strength;
         this.rgb = getRGB(hex);
     }
 }
@@ -63,6 +64,11 @@ surface.addEventListener('click', (event) => {
     colorPicker.value = "#ff0000"
     sourceModal.appendChild(colorPicker);
 
+    var strengthPicker = document.createElement('input');
+    strengthPicker.type = "range";
+    strengthPicker.min = 1;
+    strengthPicker.max = 4;
+    sourceModal.appendChild(strengthPicker);
     
     var confirmationButton = document.createElement('button');
     confirmationButton.innerHTML = "Ok";
@@ -72,7 +78,7 @@ surface.addEventListener('click', (event) => {
     sourceModal.style.borderRadius = `${sourceModal.clientHeight*0.25}px`;
 
     confirmationButton.addEventListener('click', (_) => {
-        sources.push(new colorSource(event.offsetX, event.offsetY, colorPicker.value));
+        sources.push(new colorSource(event.offsetX, event.offsetY, strengthPicker.value, colorPicker.value));
         document.body.removeChild(sourceModal);
         sourceModal = null;
         gradient();
@@ -83,28 +89,7 @@ surface.addEventListener('click', (event) => {
 function gradient() {
     var height = surface.height;
     var width = surface.width;
-    for (let x = 0; x < height; x++){
-        for (let y = 0; y < width ; y++){
-            var sum = 0;
-            
-            for (const source of sources){
-                sum += getDistance(x, y, source);
-            }
-            let avg = sum / sources.length;
-            
-            var pixel_color = [0, 0, 0];
-            for (const source of sources){
-                var distance = getDistance(x, y, source);
-                var multiplier = (2*avg-distance) / sum;
-
-                for (let idx = 0; idx < 3; idx++){
-                    pixel_color[idx] += source.rgb[idx] * multiplier;
-                }
-            }
-                
-            setPixel(x, y, pixel_color)
-        }
-    }
+    
 }
 
 function getDistance(x1, y1, source){
@@ -120,7 +105,7 @@ function getDistance(x1, y1, source){
         original_distance = (Math.abs(x1-source.x)+Math.abs(y1-source.y))/2;
     }
 
-    return original_distance ** 4;
+    return original_distance ** source.strength;
 }
 
 function getRGB(hex) {
