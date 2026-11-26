@@ -124,7 +124,7 @@ function getDistance(x, y, source){
         original_distance = Math.max(Math.abs(x-source.x)+Math.abs(y-source.y));
     }
 
-    return original_distance ** 4;
+    return Math.pow(original_distance, source.strength);
 }
 
 function getRGB(hex) {
