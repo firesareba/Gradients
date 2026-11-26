@@ -135,7 +135,19 @@ function setPixel(x, y, rgb) {
     for (let i=0; i<3; i++){
         rgb[i] = Math.min(255, rgb[i]);
     }
-
+    console.log(rgb);
     ctx.fillStyle = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
     ctx.fillRect(x, y, 1, 1)
+}
+
+function exportGradient(){//not working yet
+    console.log("In");
+    var download_link = document.createElement('a');
+    download_link.download = "random.png";
+    download_link.download = surface.toDataURL('image/png');
+    document.body.appendChild(download_link);
+    console.log("added download link");
+    download_link.click();
+    document.body.removeChild(download_link);
+    console.log("finished download");
 }
